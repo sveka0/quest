@@ -5,437 +5,301 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Дом у моря — Квест</title>
 
-  <style>
-* { box-sizing: border-box; }
-
-    body{
-      background:#0e141a;
-      color:#e6e6e6;
-      font-family: Arial, sans-serif;
-      padding:40px;
-      overflow-x:hidden;
-    }
-
-    /* ТУМАН */
-    body::before{
-      content:"";
-      position: fixed;
-      inset:-40px;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,.12), transparent 45%),
-        radial-gradient(circle at 80% 70%, rgba(255,255,255,.10), transparent 50%),
-        radial-gradient(circle at 60% 20%, rgba(255,255,255,.08), transparent 55%);
-      filter: blur(8px);
-      animation: fogMove 18s infinite alternate;
-      pointer-events:none;
-      z-index:0;
-    }
-    @keyframes fogMove{
-      from{transform:translate(-20px,-10px)}
-      to{transform:translate(20px,10px)}
-    }
-.scene h2 { margin: 0 0 12px; }
-.scene p  { margin: 10px 0; }
-    /* СЦЕНЫ + ПЛАВНОЕ ПОЯВЛЕНИЕ */
-.scene{
-  max-width:600px;
-  margin: 0 auto;
-  text-align:center;
-  width: 100%;
-  padding: 0 clamp(8px, 1.2vw, 18px);
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  line-height: 1.5;
-  visibility:hidden;
-  pointer-events:none;
-  opacity:0;
-  transform:translateY(6px);
-  transition: opacity .6s ease, transform .6s ease;
-}
-    .scene.active{
-      visibility:visible;
-      pointer-events:auto;
-      opacity:1;
-      transform:translateY(0);
-    }
-
-.wrap{
-  max-width: 760px;
-  width: 100%;
-  margin: 0 auto;
-
-  min-height: 78vh;
-
-  /* адаптивные отступы: на больших — больше, на маленьких — меньше */
-  padding: clamp(16px, 3vw, 34px);
-
-  border-radius: 16px;
-  background: rgba(18,27,34,.65);
-  box-shadow: 0 10px 30px rgba(0,0,0,.35);
-  backdrop-filter: blur(6px);
-
-  position: relative;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-}
-.wrap::-webkit-scrollbar{
-  width: 10px;
-}
-.wrap::-webkit-scrollbar-thumb{
-  background: rgba(255,255,255,.15);
-  border-radius: 10px;
-}
-.wrap::-webkit-scrollbar-track{
-  background: transparent;
-}
-.fade{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .25s ease;
-  z-index: 2;
-}
-.fade.on{ opacity: 1; }
-
-.content{
-  max-width: 560px;
-  margin: 18px auto;
-  text-align: left;
-  padding: 0 6px;
-}
-
-    button{
-      background:#2b3b4a;
-      color:white;
-      border:none;
-      padding:10px 15px;
-      margin:6px;
-      cursor:pointer;
-      border-radius:8px;
-    }
-    input{
-      padding:10px;
-      margin-top:10px;
-      border-radius:8px;
-      border:1px solid #2b3b4a;
-      width: 240px;
-      max-width: 100%;
-      background:#121b22;
-      color:#e6e6e6;
-    }
-
-  
-
-    .ok{ color:#7CFF9B; }
-    .bad{ color:#FF6B6B; }
-    .small{ opacity:.9; font-size:14px; }
-
-    @media (max-width: 600px){
-      body{ padding:16px; }
-      .scene{ max-width:100%; }
-      h2{ font-size:22px; }
-      button{ width:100%; margin:6px 0; }
-      input{ width:100%; }
-      .wrap{ padding:16px;}
-
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/quiz.css" />
 </head>
 
 <body>
   <div id="fade" class="fade"></div>
-<div class="wrap">   
-  <!-- СЦЕНА 1 -->
-  <section class="scene" data-scene="scene1">
-    <h2>Заброшенный дом у моря</h2>
-    <p class="small">
-      Перед тобой три двери. На каждой — табличка. Истинна только одна.
-    </p>
 
-    <div class="content">
-      <p>1️⃣ «Эта дверь ведёт в кабинет.»</p>
-      <p>2️⃣ «На одной из дверей написана ложь.»</p>
-      <p>3️⃣ «Кабинет не за этой дверью.»</p>
-    </div>
+  <!-- кино-оверлей -->
+  <div id="cine" class="cine" aria-hidden="true"></div>
+  <div id="cineText" class="cineText" aria-hidden="true"></div>
 
-    <input id="answer" placeholder="Введите номер двери (1-3)" />
-    <br><br>
-    <button onclick="checkDoor()">Открыть дверь</button>
+  <div class="wrap">
 
-    <p id="result"></p>
-  </section>
+    <!-- СЦЕНА 0: ФОРУМ -->
+    <section class="scene" data-scene="scene0">
+      <h2>Форум сталкеров</h2>
+      <p class="small">Тематический раздел: заброшенные места <span class="tag">URBEX</span></p>
 
-  <!-- СЦЕНА 2 -->
-  <section class="scene" data-scene="scene2">
-    <h2>Кабинет физика</h2>
-    <p class="small">
-      Пыльные полки, старые книги и часы на стене дрожат,
-      будто реагируют на невидимую волну…
-    </p>
+      <div class="forum">
+        <div class="forumHead">
+          <div>
+            <div class="threadTitle">Тема: «Самые странные места, где вы были»</div>
+            <div class="sys">Раздел: Заброшенные места • Страница 1</div>
+          </div>
+          <div class="forumStats">
+            <div>В сети: <b>14</b></div>
+            <div>В теме: <b id="inThread">3</b></div>
+          </div>
+        </div>
 
-    <p>На столе записка: <b>1, 1, 2, 3, 5, ?</b></p>
+        <div id="forumFeed"></div>
 
-    <input id="code2" placeholder="Введите число" />
-    <br><br>
-    <button onclick="checkCode()">Разгадать</button>
+        <div class="typing" id="typingLine" style="display:none;">
+          <span id="typingName">Кто-то</span> печатает<span class="cursor">▌</span>
+        </div>
+      </div>
 
-    <p id="result2"></p>
-    <br>
-    <button onclick="go('scene1')">← Вернуться к дверям</button>
-  </section>
+      <div id="replyBox" style="display:none; gap:10px; margin-top:12px;">
+        <input id="replyInput" placeholder="Написать ответ..." style="flex:1;">
+        <button id="replySend" type="button">Отправить</button>
+      </div>
 
-  <!-- СЦЕНА 3 -->
-  <section class="scene" data-scene="scene3">
-    <h2>Гостиная — «Шёпот стен»</h2>
-    <p class="small">
-      Дом будто дышит. Гул идёт то слева, то сверху, то изнутри стен…
-    </p>
+      <div class="choice">
+        <button type="button" onclick="go('scene0a')">➡ Пролистать тему дальше</button>
+        <button type="button" onclick="go('scene0a')">🔎 Найти упоминания в архиве форума</button>
+      </div>
+    </section>
 
-    <p>Найди 3 источника звука:</p>
+    <!-- СЦЕНА 0A: АРХИВ -->
+    <section class="scene" data-scene="scene0a">
+      <h2>Архив форума</h2>
+      <p class="small">Старые темы грузятся медленно. Половина картинок не открывается.</p>
 
-    <div>
-      <button onclick="found(1)">🔍 Труба у стены</button>
-      <button onclick="found(2)">🔍 Щель под лестницей</button>
-      <button onclick="found(3)">🔍 Вентрешётка</button>
-    </div>
+      <div class="forum">
+        <div class="post">
+          <div><span class="nick">deleted_user_118</span><span class="meta">2013</span></div>
+          <div class="quote">Кто-то слышал низкий гул у маяка? Не ветер. Идёт из земли.</div>
+        </div>
 
-    <p id="foundCount">Найдено: 0/3</p>
-    <p id="result3"></p>
+        <div class="post">
+          <div><span class="nick">Raven</span><span class="meta">2016</span></div>
+          <div class="quote">Нашли строение на берегу. Внутрь не полезли — внутри будто давление другое.</div>
+        </div>
 
-    <br>
-    <button onclick="go('scene2')">← Назад в кабинет</button>
-  </section>
+        <div class="post">
+          <div><span class="nick">Nox</span><span class="meta">2019</span></div>
+          <div class="quote">Городская легенда. Никто толком не доказывал. Координаты расплывчатые.</div>
+        </div>
+      </div>
 
-  <!-- СЦЕНА 4 -->
-  <section class="scene" data-scene="scene4">
-    <h2>Подвал — «Влажные стены»</h2>
-    <p class="small">
-      Здесь сыро. Воздух солёный, как будто море просочилось внутрь дома.
-      На стене — чистый бетон… но кажется, что под поверхностью что-то есть.
-    </p>
-
-    <p><b>Подсказка:</b> иногда надписи проявляются не от света, а от <i>влаги</i>.</p>
-
-    <p class="small">Выбери, что сделать:</p>
-    <div>
-      <button onclick="basementAction('vent')">🌀 Включить вентиляцию</button>
-      <button onclick="basementAction('wipe')">🧤 Протереть стену</button>
-      <button onclick="basementAction('heat')">🔥 Нагреть стену</button>
-    </div>
-
-    <p id="result4"></p>
-
-    <div id="basementCodeWrap" style="display:none; margin-top:14px;">
-      <p class="small">На стене проступили символы. Введи слово:</p>
-      <input id="code4" placeholder="Введите слово" />
-      <br><br>
-      <button onclick="checkBasement()">Подтвердить</button>
-    </div>
-
-    <br>
-    <button onclick="go('scene3')">← Назад в гостиную</button>
-  </section>
-
-  <!-- СЦЕНА 5 -->
-  <section class="scene" data-scene="scene5">
-    <h2>Чердак — «Окно на море»</h2>
-    <p class="small">
-      Сквозь пыльное окно видно море. Гул почти невыносимый — как будто дом
-      резонирует вместе с волнами. В углу — установка и связка проводов.
-    </p>
-
-    <p class="small">
-      На столе три фрагмента записей. Сложи вывод: что происходило в доме?
-    </p>
-
-    <div class="content">
-      <p>📜 1) «Конструкция усиливает низкие частоты. Влага — ключ к проявлению меток.»</p>
-      <p>📜 2) «Кто-то вмешался в настройки. После этого резонанс стал опасным.»</p>
-      <p>📜 3) «Если отключить питание и перекрыть воздуховоды — дом замолчит.»</p>
-    </div>
-
-    <p class="small"><b>Вопрос:</b> что это было?</p>
-    <p class="small">Выбери одно:</p>
-
-    <div>
-      <button onclick="finalAnswer('ghost')">👻 Призрак</button>
-      <button onclick="finalAnswer('experiment')">🔬 Эксперимент (физика)</button>
-      <button onclick="finalAnswer('crime')">🕵 Преступление</button>
-      <button onclick="finalAnswer('mix')">🧩 Смесь всего</button>
-    </div>
-
-    <p id="result5"></p>
-
-    <div id="finalEnd" style="display:none; margin-top:16px;">
-      <p class="ok"><b>Финал:</b> ты отключаешь питание, перекрываешь воздуховоды… и дом наконец перестаёт “дышать”.</p>
       <p class="small">
-        Мистика рассыпается в объяснениях: акустический резонанс, влажность, давление.
-        Но остаётся человеческий след — тот, кто вмешался, хотел забрать разработки.
+        Ты закрываешь вкладку… но мысль не отпускает.
+        <br>Если это просто байка — ты вернёшься домой с пустыми руками.
+        <br>Если нет — лучше узнать сейчас.
       </p>
-      <button onclick="restartGame()">↻ Начать заново</button>
-    </div>
 
-    <br>
-    <button onclick="go('scene4')">← Назад в подвал</button>
-  </section>
-</div>
-  <script>
-    const foundSet = new Set();
-    let basementRevealed = false;
+      <div class="choice">
+        <button type="button" onclick="goToLighthouse()">🌫 Поехать к маяку</button>
+        <button type="button" onclick="setMsg('prologMsg','Ты откладываешь это на потом… но имя Seawatcher почему-то не выходит из головы.', false)">↩ Не сейчас</button>
+      </div>
 
-  function go(sceneId){
-  const fade = document.getElementById("fade");
-  fade.classList.add("on");
+      <p id="prologMsg"></p>
+    </section>
 
-  setTimeout(() => {
-    document.querySelectorAll(".scene").forEach(s => s.classList.remove("active"));
-    const next = document.querySelector(`[data-scene="${sceneId}"]`);
-    if (next) next.classList.add("active");
-    fade.classList.remove("on");
-  }, 180);
-}
+    <!-- СЦЕНА 0B: ДОРОГА / ВОРОТА -->
+    <section class="scene" data-scene="scene0b">
+      <h2>Дорога к маяку</h2>
+      <p class="small">
+        Связь пропадает за несколько километров. Асфальт заканчивается. Море слышно раньше, чем видно.
+      </p>
 
-    window.addEventListener("DOMContentLoaded", () => go("scene1"));
+      <p class="small">
+        Ты глушишь двигатель — и впервые слышишь это: низкий гул. Не громкий. Ровный.
+      </p>
 
-    function setMsg(id, text, ok){
-      const el = document.getElementById(id);
-      el.textContent = text;
-      el.className = ok ? "ok" : "bad";
-    }
+      <p class="small"><b>Перед тобой ворота.</b> Не заперты. Просто прикрыты.</p>
 
-    function checkDoor(){
-      const answer = document.getElementById("answer").value.trim();
-      if (answer === "1"){
-        document.getElementById("result").textContent = "";
-        go("scene2");
-      } else if (answer === "2" || answer === "3"){
-        setMsg("result", "Замок щёлкнул и остался закрытым.", false);
-      } else {
-        setMsg("result", "Введи 1, 2 или 3 🙂", false);
-      }
-    }
+      <div class="choice">
+        <button type="button" onclick="startFromGate('main')">🏚 Идти сразу к главному корпусу</button>
+        <button type="button" onclick="startFromGate('perimeter')">🌲 Обойти территорию по периметру</button>
+        <button type="button" onclick="startFromGate('forum')">📱 Попробовать написать на форум</button>
+        <button type="button" onclick="startFromGate('leave')">🚗 Развернуться и уехать</button>
+      </div>
 
-    function checkCode(){
-      const code = document.getElementById("code2").value.trim();
-      if (code === "8"){
-        setMsg("result2", "Часы вдруг остановились. Дверь в гостиную поддалась…", true);
-        setTimeout(() => go("scene3"), 350);
-      } else if (code.length === 0){
-        setMsg("result2", "Нужно ввести число 🙂", false);
-      } else {
-        setMsg("result2", "Формула не сходится.", false);
-      }
-    }
+      <p id="gateMsg"></p>
+    </section>
 
-    function found(n){
-      foundSet.add(n);
-      document.getElementById("foundCount").textContent = `Найдено: ${foundSet.size}/3`;
+    <!-- СЦЕНА 1: ДВЕРИ -->
+    <section class="scene" data-scene="scene1">
+      <h2>Заброшенный дом у моря</h2>
+      <p class="small">Перед тобой три двери. На каждой — табличка. Они будто ждут выбора.</p>
 
-      if (foundSet.size === 3){
-        const r = document.getElementById("result3");
-        r.textContent = "Гул складывается в ритм… На пыльном стекле проступает слово: «РЕЗОНАНС».";
-        r.className = "ok";
+      <div class="doors">
+        <button class="door" type="button" data-door="1" onclick="pickDoor(1)">
+          <span class="doorNum">1</span>
+          <span class="doorText">«Там, где время считает себя числами…»</span>
+          <span class="doorHint">📚</span>
+        </button>
 
-        if (!document.getElementById("toBasementBtn")){
-          const btn = document.createElement("button");
-          btn.id = "toBasementBtn";
-          btn.textContent = "⬇ Спуститься в подвал";
-          btn.onclick = () => go("scene4");
-          r.appendChild(document.createElement("br"));
-          r.appendChild(document.createElement("br"));
-          r.appendChild(btn);
-        }
-      }
-    }
+        <button class="door" type="button" data-door="2" onclick="pickDoor(2)">
+          <span class="doorNum">2</span>
+          <span class="doorText">«Проверка»</span>
+          <span class="doorHint">🧠</span>
+        </button>
 
-    function basementAction(action){
-      const r = document.getElementById("result4");
-      const wrap = document.getElementById("basementCodeWrap");
+        <button class="door" type="button" data-door="3" onclick="pickDoor(3)">
+          <span class="doorNum">3</span>
+          <span class="doorText">«Слова, которые лучше не читать вслух…»</span>
+          <span class="doorHint">📜</span>
+        </button>
+      </div>
 
-      if (action === "vent"){
-        basementRevealed = true;
-        r.textContent = "Воздух пошёл ровнее… и на стене проступают бледные буквы.";
-        r.className = "ok";
-        wrap.style.display = "block";
-      } else if (action === "wipe"){
-        r.textContent = "Пыль стирается, но стена остаётся пустой. Как будто нужно другое условие…";
-        r.className = "bad";
-      } else {
-        r.textContent = "Тепло быстро уходит в сырость. Буквы не проявляются.";
-        r.className = "bad";
-      }
-    }
+      <p id="result"></p>
 
-    function checkBasement(){
-      const code = document.getElementById("code4").value.trim().toLowerCase();
-      const r = document.getElementById("result4");
+      <div class="choice">
+        <button type="button" onclick="go('scene0b')">← Назад к воротам</button>
+      </div>
+    </section>
 
-      if (!basementRevealed){
-        r.textContent = "Сначала нужно понять, как проявить надпись.";
-        r.className = "bad";
-        return;
-      }
+    <!-- СЦЕНА ПОДСКАЗКИ -->
+    <section class="scene" data-scene="sceneHint">
+      <h2>Страница из дневника</h2>
+      <p class="small">Лист хрустит. Чернила местами расплылись от влаги.</p>
 
-      if (code === "резонанс" || code === "rezonans" || code === "resonance"){
-        r.textContent = "В стене щёлкает скрытый механизм. Лестница на чердак освобождена.";
-        r.className = "ok";
-        setTimeout(() => go("scene5"), 400);
-      } else if (code.length === 0){
-        r.textContent = "Нужно ввести слово 🙂";
-        r.className = "bad";
-      } else {
-        r.textContent = "Не сходится. Буквы будто расплываются… попробуй ещё раз.";
-        r.className = "bad";
-      }
-    }
+      <div class="content">
+        <p><b>…</b>“Гул — это не ‘шум’. Это <b>режим</b>. Дом отвечает, если ты находишь частоту.”</p>
+        <p>“Если кто-то ищет короткий путь — он всегда выберет ‘проверку’.”</p>
+        <p>“А дверь, ведущая в кабинет, не врёт: она просто любит <b>простые ряды</b>.”</p>
+      </div>
 
-    function finalAnswer(a){
-      const r = document.getElementById("result5");
-      const end = document.getElementById("finalEnd");
+      <p class="small">На полях: <b>1, 1, 2, 3, 5, …</b></p>
 
-      if (a === "mix"){
-        r.textContent = "Верно. Здесь и физика, и человеческий мотив, и ощущение мистики — потому что ты не знала причины.";
-        r.className = "ok";
-        end.style.display = "block";
-      } else {
-        r.textContent = "Почти, но не хватает одного слоя. Подумай, что тут было одновременно.";
-        r.className = "bad";
-        end.style.display = "none";
-      }
-    }
+      <div class="choice">
+        <button type="button" onclick="go('scene1')">← Назад к дверям</button>
+      </div>
+    </section>
 
-    function restartGame(){
-      foundSet.clear();
-      basementRevealed = false;
+    <!-- СЦЕНА ВИКТОРИНЫ -->
+    <section class="scene" data-scene="sceneQuiz">
+      <h2>Дверь с табличкой «Проверка»</h2>
+      <p class="small">Кажется, замок реагирует не на ключ, а на понимание.</p>
 
-      document.getElementById("foundCount").textContent = "Найдено: 0/3";
-      document.getElementById("result3").textContent = "";
-      document.getElementById("result3").className = "";
-      const btn = document.getElementById("toBasementBtn");
-      if (btn) btn.remove();
+      <div id="quizBox" class="quizBox"></div>
 
-      document.getElementById("basementCodeWrap").style.display = "none";
-      document.getElementById("code4").value = "";
-      document.getElementById("result4").textContent = "";
-      document.getElementById("result4").className = "";
+      <div class="choice">
+        <button type="button" onclick="go('scene1')">← Назад к дверям</button>
+      </div>
+    </section>
 
-      document.getElementById("answer").value = "";
-      document.getElementById("result").textContent = "";
-      document.getElementById("code2").value = "";
-      document.getElementById("result2").textContent = "";
-      document.getElementById("result2").className = "";
+    <!-- СЦЕНА 2: КАБИНЕТ -->
+    <section class="scene" data-scene="scene2">
+      <h2>Кабинет физика</h2>
+      <p class="small">
+        Пыльные полки, старые книги и часы на стене дрожат,
+        будто реагируют на невидимую волну…
+      </p>
 
-      document.getElementById("result5").textContent = "";
-      document.getElementById("result5").className = "";
-      document.getElementById("finalEnd").style.display = "none";
+      <p>На столе записка: <b>1, 1, 2, 3, 5, ?</b></p>
 
-      go("scene1");
-    }
-  </script>
+      <input id="code2" placeholder="Введите число" />
+      <br><br>
+      <button type="button" onclick="checkCode()">Разгадать</button>
 
+      <p id="result2"></p>
+
+      <div class="choice">
+        <button type="button" onclick="go('scene1')">← Назад к дверям</button>
+      </div>
+    </section>
+
+    <!-- СЦЕНА 3 -->
+    <section class="scene" data-scene="scene3">
+      <h2>Гостиная — «Шёпот стен»</h2>
+      <p class="small">
+        Дом будто дышит. Гул идёт то слева, то сверху, то изнутри стен…
+      </p>
+
+      <p>Найди 3 источника звука:</p>
+
+      <div>
+        <button type="button" onclick="found(1)">🔍 Труба у стены</button>
+        <button type="button" onclick="found(2)">🔍 Щель под лестницей</button>
+        <button type="button" onclick="found(3)">🔍 Вентрешётка</button>
+      </div>
+
+      <p id="foundCount">Найдено: 0/3</p>
+      <p id="result3"></p>
+
+      <div class="choice">
+        <button type="button" onclick="go('scene2')">← Назад в кабинет</button>
+      </div>
+    </section>
+
+    <!-- СЦЕНА 4 -->
+    <section class="scene" data-scene="scene4">
+      <h2>Подвал — «Влажные стены»</h2>
+      <p class="small">
+        Здесь сыро. Воздух солёный, как будто море просочилось внутрь дома.
+        На стене — чистый бетон… но кажется, что под поверхностью что-то есть.
+      </p>
+
+      <p><b>Подсказка:</b> иногда надписи проявляются не от света, а от <i>влаги</i>.</p>
+
+      <p class="small">Выбери, что сделать:</p>
+      <div>
+        <button type="button" onclick="basementAction('vent')">🌀 Включить вентиляцию</button>
+        <button type="button" onclick="basementAction('wipe')">🧤 Протереть стену</button>
+        <button type="button" onclick="basementAction('heat')">🔥 Нагреть стену</button>
+      </div>
+
+      <p id="result4"></p>
+
+      <div id="basementCodeWrap" style="display:none; margin-top:14px;">
+        <p class="small">На стене проступили символы. Введи слово:</p>
+        <input id="code4" placeholder="Введите слово" />
+        <br><br>
+        <button type="button" onclick="checkBasement()">Подтвердить</button>
+      </div>
+
+      <div class="choice">
+        <button type="button" onclick="go('scene3')">← Назад в гостиную</button>
+      </div>
+    </section>
+
+    <!-- СЦЕНА 5 -->
+    <section class="scene" data-scene="scene5">
+      <h2>Чердак — «Окно на море»</h2>
+      <p class="small">
+        Сквозь пыльное окно видно море. Гул почти невыносимый — как будто дом
+        резонирует вместе с волнами. В углу — установка и связка проводов.
+      </p>
+
+      <p class="small">
+        На столе три фрагмента записей. Сложи вывод: что происходило в доме?
+      </p>
+
+      <div class="content">
+        <p>📜 1) «Конструкция усиливает низкие частоты. Влага — ключ к проявлению меток.»</p>
+        <p>📜 2) «Кто-то вмешался в настройки. После этого резонанс стал опасным.»</p>
+        <p>📜 3) «Если отключить питание и перекрыть воздуховоды — дом замолчит.»</p>
+      </div>
+
+      <p class="small"><b>Вопрос:</b> что это было?</p>
+
+      <div>
+        <button type="button" onclick="finalAnswer('ghost')">👻 Призрак</button>
+        <button type="button" onclick="finalAnswer('experiment')">🔬 Эксперимент (физика)</button>
+        <button type="button" onclick="finalAnswer('crime')">🕵 Преступление</button>
+        <button type="button" onclick="finalAnswer('mix')">🧩 Смесь всего</button>
+      </div>
+
+      <p id="result5"></p>
+
+      <div id="finalEnd" style="display:none; margin-top:16px;">
+        <p class="ok"><b>Финал:</b> ты отключаешь питание, перекрываешь воздуховоды… и дом наконец перестаёт “дышать”.</p>
+        <p class="small">
+          Мистика рассыпается в объяснениях: акустический резонанс, влажность, давление.
+          Но остаётся человеческий след — тот, кто вмешался, хотел забрать разработки.
+        </p>
+        <button type="button" onclick="restartGame()">↻ Начать заново</button>
+      </div>
+
+      <div class="choice">
+        <button type="button" onclick="go('scene4')">← Назад в подвал</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- аудио: один раз, без дублей -->
+  <audio id="ping" src="./assets/ping.mp3" preload="auto"></audio>
+  <audio id="whoosh" src="./assets/whoosh.mp3" preload="auto"></audio>
+  <audio id="glitch" src="./assets/glitch.mp3" preload="auto"></audio>
+
+  <script src="./js/app.js" defer></script>
+  <script src="./js/quiz.js" defer></script>
 </body>
 </html>
