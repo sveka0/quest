@@ -1,1 +1,566 @@
+*{ box-sizing:border-box; }
 
+body{
+  background:#0e141a;
+  color:#e6e6e6;
+  font-family: Arial, sans-serif;
+  padding:40px;
+  overflow-x:hidden;
+}
+
+/* Туман */
+body::before{
+  content:"";
+  position: fixed;
+  inset:-40px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.12), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,.10), transparent 50%),
+    radial-gradient(circle at 60% 20%, rgba(255,255,255,.08), transparent 55%);
+  filter: blur(8px);
+  animation: fogMove 18s infinite alternate;
+  pointer-events:none;
+  z-index:0;
+}
+@keyframes fogMove{
+  from{transform:translate(-20px,-10px)}
+  to{transform:translate(20px,10px)}
+}
+
+.fade{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 2;
+}
+.fade.on{ opacity: 1; }
+
+.wrap{
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 78vh;
+  padding: clamp(16px, 3vw, 34px);
+  border-radius: 16px;
+  background: rgba(18,27,34,.65);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+  position: relative;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  z-index:1;
+}
+.wrap::-webkit-scrollbar{ width:10px; }
+.wrap::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.15); border-radius:10px; }
+.wrap::-webkit-scrollbar-track{ background: transparent; }
+
+.scene h2{ margin:0 0 12px; }
+.scene p{ margin:10px 0; }
+
+.scene{
+  max-width:600px;
+  margin:0 auto;
+  text-align:center;
+  width:100%;
+  padding: 0 clamp(8px, 1.2vw, 18px);
+  position:absolute;
+  left:0; right:0; top:0;
+  line-height:1.5;
+  visibility:hidden;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(6px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.scene.active{
+  visibility:visible;
+  pointer-events:auto;
+  opacity:1;
+  transform:translateY(0);
+}
+
+button{
+  background:#2b3b4a;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  margin:6px;
+  cursor:pointer;
+  border-radius:8px;
+  transition: transform .08s ease, filter .15s ease;
+}
+button:hover{ filter: brightness(1.08); }
+button:active{ transform: translateY(1px); }
+
+input{
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #2b3b4a;
+  width: 240px;
+  max-width: 100%;
+  background:#121b22;
+  color:#e6e6e6;
+}
+
+.ok{ color:#7CFF9B; }
+.bad{ color:#FF6B6B; }
+.small{ opacity:.9; font-size:14px; }
+
+.tag{
+  display:inline-block;
+  font-size: 12px;
+  opacity: .75;
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-left: 8px;
+}
+.choice{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+.choice button{ text-align:left; line-height:1.2; }
+
+/* ===== Форум ===== */
+.forum{ 
+  text-align:left; 
+  max-width: 640px; 
+  margin: 0 auto; 
+   background: rgba(10,18,32,.75);
+  border: 1px solid rgba(120,180,255,.15);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: inset 0 0 20px rgba(80,140,255,.05); 
+}
+
+.forumHead{
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 12px 0 14px;
+}
+.forumStats{
+  opacity:.72;
+  font-size: 12px;
+  text-align:right;
+  white-space: nowrap;
+}
+.threadTitle{ font-weight: 800; margin: 0; }
+
+.post{
+  position: relative;
+  display:flex;
+  gap: 10px;
+  align-items:flex-start;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 10px 0;
+  background: rgba(20,30,55,.65);
+  border-color: rgba(120,180,255,.12);
+}
+.post::before{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width: 4px;
+  background: rgba(255,255,255,.10);
+  border-top-left-radius:12px;
+  border-bottom-left-radius:12px;
+}
+.post.new::before{ background: rgba(124,255,155,.35); }
+
+.avatar{
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 800;
+  opacity:.9;
+  user-select:none;
+}
+.postBody{ flex:1; }
+
+.nickRow{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.nick{ 
+  font-weight: 700; 
+  opacity: .95;
+  color: #9fd0ff; 
+}
+.meta{ 
+  opacity: .65; 
+  font-size: 12px;
+  color: rgba(180,210,255,.6); 
+}
+.quote{ 
+  margin-top: 6px; 
+  opacity: .92; 
+  line-height: 1.45; 
+}
+
+.onlineDot{
+  display:inline-block;
+  width:8px; height:8px;
+  border-radius:999px;
+  background:#4dffcf;
+  transform: translateY(-1px);
+  box-shadow: 0 0 8px rgba(77,255,207,.6);
+}
+
+.badge{
+  font-size: 11px;
+  opacity: .75;
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.sys{
+  opacity: .8;
+  font-size: 13px;
+  margin: 10px 0;
+  color: rgba(150,190,255,.65);
+  font-style: italic;
+}
+
+.typing{
+  opacity:.78;
+  font-size: 13px;
+  margin: 10px 0;
+  color: #7bb6ff;
+}
+.cursor{
+  display:inline-block;
+  width:10px;
+  margin-left:2px;
+  opacity:.8;
+  animation: blink .9s step-end infinite;
+}
+@keyframes blink{ 50%{opacity:0} }
+
+.post.reveal{
+  opacity:0;
+  transform: translateY(8px);
+  animation: popIn .45s ease forwards;
+}
+@keyframes popIn{ to{ opacity:1; transform: translateY(0);} }
+
+/* реакции и “панель действий” */
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top: 8px;
+  opacity:.78;
+  font-size: 12px;
+}
+.actions button{
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  margin:0;
+}
+.reacts{
+  display:flex;
+  gap:8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.react{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  font-size: 12px;
+  opacity:.9;
+}
+
+/* мини-ввод */
+.replyBox{
+  display:flex;
+  gap:10px;
+  margin-top: 12px;
+}
+.replyBox input{
+  flex:1;
+  margin:0;
+}
+.replyBox button{
+  white-space: nowrap;
+}
+
+@media (max-width: 600px){
+  body{ padding:16px; }
+  .scene{ max-width:100%; }
+  h2{ font-size:22px; }
+  button{ width:100%; margin:6px 0; }
+  input{ width:100%; }
+  .wrap{ padding:16px; }
+  .replyBox{ flex-direction: column; }
+}
+
+/* ====== Форум: скан-слой (цифровая плёнка) ====== */
+.forum{
+  position: relative;
+  background: rgba(10,18,32,.75);
+  border: 1px solid rgba(120,180,255,.15);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: inset 0 0 20px rgba(80,140,255,.05);
+}
+
+.forum::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius: 18px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.03),
+      rgba(255,255,255,.03) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  opacity:.25;
+  mix-blend-mode: overlay;
+}
+
+/* Посты — холоднее и читабельнее */
+.post{
+  background: rgba(20,30,55,.65);
+  border-color: rgba(120,180,255,.12);
+}
+
+.nick{ color:#9fd0ff; }
+.meta{ color: rgba(180,210,255,.6); }
+.sys{ color: rgba(150,190,255,.65); font-style: italic; }
+
+.onlineDot{
+  background:#4dffcf;
+  box-shadow: 0 0 8px #4dffcf;
+}
+
+/* ====== ГЛИЧ-эффект для блока форума ====== */
+.glitch{
+  animation: glitch 420ms steps(2,end) 1;
+}
+@keyframes glitch{
+  0%   { transform: translate(0,0); filter:none; }
+  20%  { transform: translate(-2px,1px); filter: contrast(1.15) saturate(1.2); }
+  40%  { transform: translate(2px,-1px); filter: hue-rotate(12deg); }
+  60%  { transform: translate(-1px,-2px); filter: contrast(1.25); }
+  80%  { transform: translate(1px,2px); filter: hue-rotate(-10deg); }
+  100% { transform: translate(0,0); filter:none; }
+}
+
+/* ====== Маркер “вышел из сети” ====== */
+.post.offline{
+  opacity:.92;
+}
+.post.offline .onlineDot{
+  background: rgba(255,255,255,.25);
+  box-shadow:none;
+}
+
+/* ====== Кино-переход “поездка” ====== */
+/* КИНО-КАДР */
+.cine{
+  position: fixed;
+  inset: 0;
+  background: #000;          /* НЕпрозрачный */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s ease;   /* мягче */
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.cine.on{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* слой шума */
+.cine::after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:
+    repeating-radial-gradient(circle at 20% 30%, rgba(255,255,255,.03), transparent 2px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.03), rgba(255,255,255,.03) 1px, transparent 2px);
+  animation: noiseMove .25s steps(2) infinite;
+  mix-blend-mode: overlay;
+}
+
+@keyframes noiseMove{
+  0%{ transform: translate(0,0); }
+  25%{ transform: translate(-6%,3%); }
+  50%{ transform: translate(3%,-6%); }
+  75%{ transform: translate(-3%,-3%); }
+  100%{ transform: translate(0,0); }
+}
+
+/* Текст — без opacity/transform анимации, чтобы не "прыгал" */
+.cineText{
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 28px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transform: none;
+  transition: opacity .25s ease;
+}
+
+/* ПОКАЗЫВАЕМ ТОЛЬКО КОГДА on */
+.cineText.on{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cineBox{
+  max-width: 720px;
+  width: min(720px,92vw);
+  padding: 22px 18px;
+  border-radius: 16px;
+  background: rgba(20,25,32,.75);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 30px rgba(0,0,0,.6);
+}
+
+.cineTitle{
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 10px;
+  letter-spacing: .4px;
+}
+
+.cineSub{
+  opacity: .85;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cine.on{
+  animation: flicker .12s infinite;
+}
+
+@keyframes flicker{
+  0%{ opacity:1 }
+  50%{ opacity:.92 }
+  100%{ opacity:1 }
+}
+
+/* ===== ДВЕРИ ===== */
+.doors{
+  display: grid;
+  gap: 12px;
+  margin: 18px auto 10px;
+  max-width: 560px;
+}
+
+.door{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 44px 1fr 28px;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.10);
+  color: #e6e6e6;
+  text-align: left;
+
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.door:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.06);
+}
+
+.door:active{
+  transform: translateY(0);
+}
+
+.doorNum{
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-weight: 800;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.doorText{
+  line-height: 1.35;
+  opacity: .95;
+}
+
+.doorHint{
+  opacity: .75;
+  font-size: 18px;
+  justify-self: end;
+}
+
+/* выбранная дверь */
+.door.selected{
+  border-color: rgba(124,255,155,.35);
+  background: rgba(124,255,155,.08);
+}
+
+/* “замок не поддался” */
+.door.locked{
+  animation: doorShake .32s ease;
+  border-color: rgba(255,107,107,.35);
+  background: rgba(255,107,107,.07);
+}
+
+@keyframes doorShake{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-6px); }
+  50%{ transform: translateX(6px); }
+  75%{ transform: translateX(-4px); }
+  100%{ transform: translateX(0); }
+}
+
+/* “открылась” */
+.door.opened{
+  border-color: rgba(124,255,155,.55);
+  background: rgba(124,255,155,.12);
+  animation: doorOpen .45s ease forwards;
+}
+
+@keyframes doorOpen{
+  to{ transform: translateY(-2px); }
+}
