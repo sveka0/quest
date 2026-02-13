@@ -564,3 +564,47 @@ input{
 @keyframes doorOpen{
   to{ transform: translateY(-2px); }
 }
+
+/* ===== Mobile fix: только форум (scene0) ===== */
+@media (max-width: 520px) {
+
+  /* уменьшаем отступы у сцены форума */
+  [data-scene="scene0"]{
+    padding-bottom: 14px;
+  }
+
+  /* форумная карточка — чуть компактнее */
+  [data-scene="scene0"] .forum{
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  /* replyBox (поле ввода) делаем компактнее */
+  [data-scene="scene0"] #replyBox{
+    position: sticky;
+    bottom: 10px;
+    z-index: 10;
+    background: rgba(10, 14, 22, .72);
+    backdrop-filter: blur(10px);
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  [data-scene="scene0"] #replyInput{
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  [data-scene="scene0"] #replySend{
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+
+  /* кнопки выбора — меньше высота/паддинги */
+  [data-scene="scene0"] .choice button{
+    padding: 12px 12px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+}
