@@ -308,14 +308,14 @@ input{
   white-space: nowrap;
 }
 
-@media (max-width: 600px){
+/*@media (max-width: 600px){
   body{ padding:16px; }
   .scene{ max-width:100%; }
   h2{ font-size:22px; }
   button{ width:100%; margin:6px 0; }
   input{ width:100%; }
   .wrap{ padding:16px; }
-  .replyBox{ flex-direction: column; }
+  .replyBox{ flex-direction: column; }*/
 }
 
 /* ====== Форум: скан-слой (цифровая плёнка) ====== */
