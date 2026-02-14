@@ -608,3 +608,158 @@ input{
     border-radius: 14px;
   }
 }
+/* =========================
+   FORUM — MOBILE FIX
+   ========================= */
+@media (max-width: 768px){
+
+  /* контейнер форума */
+  .forum{
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  /* шапка темы */
+  .forumHead{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .threadTitle{
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .forumStats{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: .95rem;
+  }
+
+  /* пост */
+  .post{
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .avatar{
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 1rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .postBody{
+    min-width: 0; /* важно: иначе текст может вылазить */
+  }
+
+  /* строка ника/меты */
+  .nickRow{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    align-items: baseline;
+  }
+
+  .nick{
+    font-size: 1rem;
+  }
+
+  .meta{
+    font-size: .85rem;
+    opacity: .85;
+  }
+
+  .badge{
+    font-size: .75rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+
+  /* текст поста */
+  .quote{
+    margin-top: 6px;
+    line-height: 1.35;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  /* кнопки действий под постом */
+  .actions{
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .actions button{
+    width: auto;
+    padding: 8px 10px;
+    font-size: .9rem;
+  }
+
+  /* реакции */
+  .reacts{
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .react{
+    font-size: .85rem;
+    padding: 6px 10px;
+    border-radius: 999px;
+  }
+
+  /* системные сообщения */
+  .sys{
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: .9rem;
+  }
+
+  /* строка "печатает..." */
+  .typing{
+    font-size: .9rem;
+    padding: 8px 10px;
+  }
+
+  /* блок ответа */
+  #replyBox{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #replyInput{
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+  }
+
+  #replySend{
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+  }
+}
+
+/* совсем маленькие экраны */
+@media (max-width: 420px){
+  .post{
+    grid-template-columns: 38px 1fr;
+  }
+  .avatar{
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+}
